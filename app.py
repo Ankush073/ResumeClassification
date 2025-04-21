@@ -2,8 +2,8 @@ from flask import Flask, request, render_template
 import pickle
 import re
 import os
+import PyPDF2
 
-# Load model and vectorizer
 with open('model_and_tfidf.pkl', 'rb') as file:
     loaded_objects = pickle.load(file)
 
@@ -22,21 +22,14 @@ category_mapping = {
 app = Flask(__name__)
 
 def clean_resume(resume_text):
-    clean_text = re.sub('http\S+\s*', ' ', resume_text)
-    clean_text = re.sub('RT|cc', ' ', clean_text)
-    clean_text = re.sub('#\S+', '', clean_text)
-    clean_text = re.sub('@\S+', ' ', clean_text)
-    clean_text = re.sub('[%s]' % re.escape("""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""), ' ', clean_text)
-    clean_text = re.sub(r'[^\x00-\x7f]', r' ', clean_text)
-    clean_text = re.sub('\s+', ' ', clean_text)
-    return clean_text
-
-from flask import Flask, request, render_template
-import pickle
-import re
-import PyPDF2  # used instead of fitz
-
-# ... other code remains same ...
+    resume_text = re.sub('http\S+\s*', ' ', resume_text)
+    resume_text = re.sub('RT|cc', ' ', resume_text)
+    resume_text = re.sub('#\S+', '', resume_text)
+    resume_text = re.sub('@\S+', ' ', resume_text)
+    resume_text = re.sub('[%s]' % re.escape("""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""), ' ', resume_text)
+    resume_text = re.sub(r'[^\x00-\x7f]', r' ', resume_text)
+    resume_text = re.sub('\s+', ' ', resume_text)
+    return resume_text
 
 def read_pdf(file_stream):
     reader = PyPDF2.PdfReader(file_stream)
@@ -44,7 +37,6 @@ def read_pdf(file_stream):
     for page in reader.pages:
         text += page.extract_text() or ''
     return text
-
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
