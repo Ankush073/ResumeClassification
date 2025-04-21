@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume Screening App</title>
+</head>
+<body>
+    <h1>Resume Screening App</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="resume">Upload your resume (.pdf or .txt):</label><br><br>
+        <input type="file" name="resume" required><br><br>
+        <button type="submit">Predict Category</button>
+    </form>
+
+    {% if prediction %}
+        <h2>Predicted Category: {{ prediction }}</h2>
+    {% endif %}
+</body>
+</html>
